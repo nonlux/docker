@@ -21,7 +21,6 @@ ENV CONFIG="\
 --with-http_realip_module \
 --with-http_ssl_module \
 --without-http_browser_module \
---without-http_charset_module \
 --without-http_empty_gif_module \
 --without-http_geo_module \
 --without-http_scgi_module \
@@ -62,8 +61,8 @@ RUN apk add --no-cache --virtual .build-deps \
     adduser -D -S \
       -h /var/cache/nginx \
       -s /sbin/nologin \
-      -G nginx nginx &&\
-    ./configure $CONFIG &&\
+      -G nginx nginx 
+RUN cd /tmp/nginx/nginx-$NGINX_VERSION && ./configure $CONFIG &&\
     make install &&\
     apk add --no-cache --virtual .gettext gettext &&\
     mv /usr/bin/envsubst /tmp/  &&\
@@ -80,6 +79,17 @@ RUN apk add --no-cache --virtual .build-deps \
    && mv /tmp/envsubst /usr/local/bin/  \
    && rm -rf /tmp/nginx &&\
    ln -sf /dev/stdout /var/log/nginx/access.log \
-   && ln -sf /dev/stderr /var/log/nginx/error.log 
+   && ln -sf /dev/stderr /var/log/nginx/error.log  \
+   && rm -fr /etc/nginx
+ENV PYTHON_VERSION=2.7.13-r0
+ENV PY_PIP_VERSION=9.0.0-r1
+ENV SUPERVISOR_VERSION=3.3.0
 
+RUN apk update && apk add -u python=$PYTHON_VERSION py-pip=$PY_PIP_VERSION
+RUN pip install supervisor==$SUPERVISOR_VERSION
+
+COPY config /etc/nginx
+
+VOLUME /etc/nginx/out
+EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
