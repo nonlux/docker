@@ -1,12 +1,9 @@
 #/bin/bash
-export NAME="base_nginx"
+~/src/dot/bin/docker-build-flat  nginx latest
+export NAME=nginx
 docker kill $NAME
 docker rm $NAME
-docker rmi nonlux/nginx:big
-echo $NAME
-set -e
-docker build . -t nonlux/nginx:big
-docker-squash nonlux/nginx:big -t nonlux/nginx:base
-docker run --name $NAME -p 8090:80  -v "$PWD/example:/etc/nginx/out" -d nonlux/nginx:base
+docker run --name $NAME -p 8090:80  -v "$PWD/example:/etc/nginx/out" -d nonlux/nginx:latest
 docker ps
+sleep 2
 docker logs $NAME

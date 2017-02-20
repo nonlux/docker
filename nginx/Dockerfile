@@ -1,4 +1,4 @@
-FROM alpine
+FROM nonlux/supervisor:latest
 ENV NGINX_VERSION 1.11.10
 ENV CONFIG="\
    --prefix=/etc/nginx \
@@ -81,15 +81,9 @@ RUN cd /tmp/nginx/nginx-$NGINX_VERSION && ./configure $CONFIG &&\
    ln -sf /dev/stdout /var/log/nginx/access.log \
    && ln -sf /dev/stderr /var/log/nginx/error.log  \
    && rm -fr /etc/nginx
-ENV PYTHON_VERSION=2.7.13-r0
-ENV PY_PIP_VERSION=9.0.0-r1
-ENV SUPERVISOR_VERSION=3.3.0
-
-RUN apk update && apk add -u python=$PYTHON_VERSION py-pip=$PY_PIP_VERSION
-RUN pip install supervisor==$SUPERVISOR_VERSION
 
 COPY config /etc/nginx
+COPY nginx.super.conf /etc/supervisor/conf.d/nginx.conf
 
 VOLUME /etc/nginx/out
 EXPOSE 80 443
-CMD ["nginx", "-g", "daemon off;"]
