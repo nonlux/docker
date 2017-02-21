@@ -1,4 +1,4 @@
-FROM nonlux/supervisor:latest
+FROM nonlux/s6:latest
 ENV NGINX_VERSION 1.11.10
 ENV CONFIG="\
    --prefix=/etc/nginx \
@@ -83,7 +83,7 @@ RUN cd /tmp/nginx/nginx-$NGINX_VERSION && ./configure $CONFIG &&\
    && rm -fr /etc/nginx
 
 COPY config /etc/nginx
-COPY nginx.super.conf /etc/supervisor/conf.d/nginx.conf
-
+ENTRYPOINT ["/init"]
+CMD ["nginx"]
 VOLUME /etc/nginx/out
 EXPOSE 80 443
