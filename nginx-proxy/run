@@ -1,0 +1,2 @@
+#!/usr/bin/execlineb -P
+docker-gen -notify "nginx -s reload"  -notify-output -watch -only-exposed /etc/docker-gen/templates/nginx.tmpl /etc/nginx/out/default.conf 

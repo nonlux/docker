@@ -83,7 +83,6 @@ RUN cd /tmp/nginx/nginx-$NGINX_VERSION && ./configure $CONFIG &&\
    && rm -fr /etc/nginx
 
 COPY config /etc/nginx
-ENTRYPOINT ["/init"]
-CMD ["nginx"]
+COPY run /etc/services.d/nginx/run
 VOLUME /etc/nginx/out
 EXPOSE 80 443
